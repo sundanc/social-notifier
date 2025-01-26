@@ -1,30 +1,29 @@
 import { useEffect, useState } from "react";
 
-interface Notification {
-  platform: string;
-  user: string;
-  content: string;
-}
-
 const NotificationList = () => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [notifications, setNotifications] = useState<any[]>([]);
 
-  useEffect(() => {
-    fetch("/api/notifications")
-      .then((res) => res.json())
-      .then((data) => setNotifications(data));
-  }, []);
+    useEffect(() => {
+        // Fetch notifications from Next.js API route
+        fetch("/api/notifications")
+            .then((response) => response.json())
+            .then((data) => setNotifications(data.notifications))
+            .catch((error) => console.error("Error fetching notifications:", error));
+    }, []);
 
-  return (
-    <div className="p-4">
-      {notifications.map((n, i) => (
-        <div key={i} className="p-2 border-b">
-          <p>{n.content}</p>
-          <small>{n.platform}</small>
+    return (
+        <div>
+            <h1>Notifications</h1>
+            <ul>
+                {notifications.map((notification, index) => (
+                    <li key={index}>
+                        <strong>{notification.user}</strong>: {notification.content}
+                    </li>
+                ))}
+            </ul>
         </div>
-      ))}
-    </div>
-  );
+    );
 };
 
 export default NotificationList;
+    
